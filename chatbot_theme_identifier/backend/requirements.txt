@@ -1,0 +1,20 @@
+fastapi
+uvicorn[standard]
+langchain
+openai  # or google-generativeai for Gemini, or llama-cpp-python for Groq/Llama
+chromadb  # or qdrant-client, faiss-cpu
+PyPDF2  # for PDF processing
+python-multipart  # For handling file uploads with FastAPI
+tesseract  # or pytesseract if using the Tesseract wrapper
+paddlepaddle  # If using PaddleOCR
+langchain-community
+groq
+sentence-transformers
+langchain-huggingface
+langchain-chroma
+nltk
+scikit-learn
+gensim
+pypdf
+PyMuPDF
+starlette
