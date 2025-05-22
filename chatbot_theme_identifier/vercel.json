@@ -5,26 +5,26 @@
       "src": "backend/main.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",  
-        "runtime": "python3.11"   
+        "maxLambdaSize": "15mb",
+        "runtime": "python3.11"
       }
     },
     {
-      "src": "frontend/**",       
-      "use": "@vercel/static-build"
+      "src": "frontend/**", // This matches all files within the frontend directory
+      "use": "@vercel/static" // CHANGED: Use @vercel/static for plain HTML/CSS/JS files
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",         
-      "dest": "backend/main.py"   
+      "src": "/api/(.*)",
+      "dest": "backend/main.py"
     },
     {
-      "src": "/(.*)",              
-      "dest": "frontend/$1"       
+      "src": "/(.*)", // Catch-all for frontend routes
+      "dest": "frontend/$1" // Serve files from the frontend directory
     }
   ],
   "installCommand": "pip install -r backend/requirements.txt",
   "buildCommand": "echo 'Vercel build initiated.'",
-  "outputDirectory": "frontend"   
+  "outputDirectory": "frontend"
 }
