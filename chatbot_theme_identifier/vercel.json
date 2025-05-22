@@ -10,8 +10,8 @@
       }
     },
     {
-      "src": "frontend/**", // This matches all files within the frontend directory
-      "use": "@vercel/static" // CHANGED: Use @vercel/static for plain HTML/CSS/JS files
+      "src": "frontend/**", 
+      "use": "@vercel/static" 
     }
   ],
   "routes": [
@@ -20,8 +20,8 @@
       "dest": "backend/main.py"
     },
     {
-      "src": "/(.*)", // Catch-all for frontend routes
-      "dest": "frontend/$1" // Serve files from the frontend directory
+      "src": "/(.*)", 
+      "dest": "frontend/$1" 
     }
   ],
   "installCommand": "pip install -r backend/requirements.txt",
