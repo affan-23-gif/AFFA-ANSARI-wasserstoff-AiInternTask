@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const synthesizedAnswerDiv = document.getElementById('synthesizedAnswer');
     const documentResponsesTableBody = document.querySelector('#documentResponsesTable tbody');
 
-    const BACKEND_BASE_URL = "http://localhost:8000"; // Make sure your backend is running here
+    // IMPORTANT: For Vercel deployment, use a relative path for the API endpoint
+    // Your Vercel `routes` in vercel.json will handle routing /api requests to your backend
+    const BACKEND_BASE_URL = "/api"; 
 
     // --- Document Upload Logic ---
     uploadButton.addEventListener('click', async () => {
@@ -30,7 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                // Attempt to read error message from response body if available
+                const errorData = await response.json().catch(() => ({ message: `HTTP error! Status: ${response.status}` }));
+                throw new Error(errorData.detail || errorData.message || `HTTP error! Status: ${response.status}`);
             }
 
             const result = await response.json();
@@ -45,11 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     askButton.addEventListener('click', async () => {
         const query = queryInput.value.trim();
 
-        console.log('1. Value of queryInput.value.trim():', query);
-
         if (!query) {
             alert("Please enter a question.");
-            console.log('2. Query is empty, aborting.');
             return;
         }
 
@@ -57,8 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         documentResponsesTableBody.innerHTML = ''; // Clear previous results
 
         const requestBody = JSON.stringify({ query: query });
-        console.log('3. JSON Request Body being sent:', requestBody);
-        console.log('4. Type of requestBody:', typeof requestBody);
 
         try {
             const response = await fetch(`${BACKEND_BASE_URL}/query/`, {
@@ -70,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                 // Attempt to read error message from response body if available
+                const errorData = await response.json().catch(() => ({ message: `HTTP error! Status: ${response.status}` }));
+                throw new Error(errorData.detail || errorData.message || `HTTP error! Status: ${response.status}`);
             }
 
             const result = await response.json();
@@ -90,9 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                         if (themeItem.citations && themeItem.citations.length > 0) {
                             const docIds = [...new Set(themeItem.citations.map(c => c.document_id))].join(', ');
-                            chatContent += `(Documents: ${docIds})`;
-                            // Removed the detailed citation list here for conciseness
-                            // If you want to display detailed citations elsewhere, you'll need a separate section
+                            chatContent += `(Documents: ${docIds})`; // Concise display of Document IDs
+                            // IMPORTANT: The detailed citation list (with snippets) is intentionally REMOVED here
+                            // to keep the themes section clean, as per the desired output format.
+                            // If you need detailed citations, consider a separate "Relevant Snippets" section below the main answer.
                         } else {
                             chatContent += 'No specific citations found for this theme.';
                         }
@@ -106,8 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Display Individual Document Responses (Tabular Format)
+            // This section will only show content if the backend explicitly sends 'tabular_results'
+            // which typically happens when the `output_format` in the query request is set to "tabular".
             if (result.tabular_results && result.tabular_results.length > 0) {
-                documentResponsesTableBody.innerHTML = '';
+                documentResponsesTableBody.innerHTML = ''; // Clear previous table content
                 result.tabular_results.forEach(item => {
                     const row = documentResponsesTableBody.insertRow();
                     row.insertCell().textContent = item["Document ID"];
@@ -115,10 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     row.insertCell().textContent = item["Citation"];
                 });
             } else {
-                const row = documentResponsesTableBody.insertRow();
-                const cell = row.insertCell();
-                cell.colSpan = 3;
-                cell.textContent = 'No individual document responses (tabular format) found.';
+                // Optionally, you can clear the table or show a message if no tabular results are expected/found
+                documentResponsesTableBody.innerHTML = `<tr><td colspan="3" class="no-results-message">No individual document responses (tabular format) found for this query type.</td></tr>`;
             }
 
         } catch (error) {
