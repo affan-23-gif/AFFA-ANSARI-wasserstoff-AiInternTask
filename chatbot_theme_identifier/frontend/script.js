@@ -129,4 +129,4 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Query error:', error);
         }
     });
-});
+})
