@@ -1,5 +1,30 @@
 {
-    "rewrites":[
-        {"source":"/(.*)","destination":"/"}
-    ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "15mb",  
+        "runtime": "python3.11"   
+      }
+    },
+    {
+      "src": "frontend/**",       
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",         
+      "dest": "backend/main.py"   
+    },
+    {
+      "src": "/(.*)",              
+      "dest": "frontend/$1"       
+    }
+  ],
+  "installCommand": "pip install -r backend/requirements.txt",
+  "buildCommand": "echo 'Vercel build initiated.'",
+  "outputDirectory": "frontend"   
 }
