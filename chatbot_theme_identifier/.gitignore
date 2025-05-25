@@ -1,0 +1,43 @@
+# Python specific ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env                 # Ignore local environment variables file
+.pytest_cache/
+.coverage
+
+# Editor/IDE specific ignores
+.vscode/             # VS Code settings (if not shared)
+.idea/               # IntelliJ/PyCharm IDE files
+*.sublime-project
+*.sublime-workspace
+
+# Operating System Files
+.DS_Store            # macOS
+Thumbs.db            # Windows
+ehthumbs.db
+.ipynb_checkpoints/  # Jupyter notebooks checkpoints
+
+# Data and Database files
+# IMPORTANT: This ignores your local ChromaDB persistence directory.
+# This data should NOT be committed to Git as it's environment-specific
+# and can be very large. Render's Disk will handle persistence on the server.
+backend/data/chroma_db/
+*.sqlite             # If ChromaDB uses sqlite files directly (often the case)
+*.parquet            # If ChromaDB uses parquet files
+
+# Log files
+*.log
+logs/
+
+# Build artifacts and deployment outputs
+# Vercel/Render specific build outputs (usually handled by platform, but good to be explicit)
+.vercel/
+.render/
+dist/
+build/
+output/
